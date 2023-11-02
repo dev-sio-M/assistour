@@ -1,15 +1,14 @@
-drop database if exists assistour ;
-create database assistour ;
+DROP DATABASE IF EXISTS assistance;
+CREATE DATABASE assistance;
 
-use assistour ;
+USE assistance;
 
-CREATE TABLE TypeContrat (
+CREATE TABLE typeContrat (
     idTypeContrat INTEGER PRIMARY KEY,
     nomTypeContrat VARCHAR(30) NOT NULL
-
 );
 
-CREATE TABLE TechnicienAssistance (
+CREATE TABLE TechniciensAssistance (
     idTA INTEGER PRIMARY KEY,
     nomTA VARCHAR(30) NOT NULL,
     prenomTA VARCHAR(30) NOT NULL
@@ -20,11 +19,9 @@ CREATE TABLE Adherent (
     nomAdherent VARCHAR(30) NOT NULL,
     prenomAdherent VARCHAR(30) NOT NULL,
     adresseAdherent VARCHAR(30) NOT NULL,
-    codePostalAdherent INTEGER NOT NULL,
+    CodePostalAdherent INTEGER NOT NULL,
     villeAdherent VARCHAR(30) NOT NULL,
-    telephoneAdherent VARCHAR(15) NOT NULL,
-    idTypeContrat INTEGER NOT NULL,
-    FOREIGN KEY (idTypeContrat) REFERENCES TypeContrat(idTypeContrat)
+    telephoneAdherent VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE Vehicule (
@@ -32,33 +29,47 @@ CREATE TABLE Vehicule (
     marque VARCHAR(30) NOT NULL,
     type VARCHAR(30) NOT NULL,
     modele VARCHAR(30) NOT NULL,
-    dateMiseEnCirculation DATE NOT NULL,
-    numAdherent INTEGER NOT NULL,
-    FOREIGN KEY (numAdherent) REFERENCES Adherent(numAdherent)
+    dateMiseEnCirculation DATE NOT NULL
+);
+
+CREATE TABLE Souscrire (
+    numAdherent INTEGER,
+    idTypeContrat INTEGER,
+    PRIMARY KEY (numAdherent, idTypeContrat),
+    FOREIGN KEY (numAdherent) REFERENCES Adherent(numAdherent),
+    FOREIGN KEY (idTypeContrat) REFERENCES typeContrat(idTypeContrat)
+);
+
+CREATE TABLE Posseder (
+    numAdherent INTEGER,
+    immatriculation VARCHAR(30),
+    PRIMARY KEY (numAdherent, immatriculation),
+    FOREIGN KEY (numAdherent) REFERENCES Adherent(numAdherent),
+    FOREIGN KEY (immatriculation) REFERENCES Vehicule(immatriculation)
 );
 
 CREATE TABLE Sinistre (
     numSinistre INTEGER PRIMARY KEY AUTO_INCREMENT,
-    numContrat INTEGER NOT NULL,
-    dateSinistre DATE NOT NULL,
+    idTypeContrat INTEGER NOT NULL,
+    DateSinistre DATE NOT NULL,
     heureSinistre TIME NOT NULL,
     causeSinistre VARCHAR(100) NOT NULL,
     diagnosticSinistre VARCHAR(255) NOT NULL,
-    lieuSinistre VARCHAR(100) NOT NULL,
-    nbPersonnesPresentes INTEGER,
-    FOREIGN KEY (numContrat) REFERENCES Adherent(numAdherent)
+    placeSinistre VARCHAR(100) NOT NULL,
+    nbPersonnesPresent INTEGER,
+    fraisDepannage INTEGER,
+    FOREIGN KEY (idTypeContrat) REFERENCES typeContrat(idTypeContrat)
 );
 
 CREATE TABLE Rapatriement (
     numRapatriement INTEGER PRIMARY KEY AUTO_INCREMENT,
     numSinistre INTEGER NOT NULL,
-    typeTransport VARCHAR(30) NOT NULL,
-    coutTransport DECIMAL(10,2) NOT NULL,
+    TypeTransport VARCHAR(30) NOT NULL,
+    CoutTransport DECIMAL(10,2) NOT NULL,
     villeDepart VARCHAR(100) NOT NULL,
     villeArrivee VARCHAR(100) NOT NULL,
     FOREIGN KEY (numSinistre) REFERENCES Sinistre(numSinistre)
 );
-
 
 CREATE TABLE SejourHotel (
     numRapatriement INTEGER NOT NULL,
@@ -68,8 +79,6 @@ CREATE TABLE SejourHotel (
     PRIMARY KEY(numRapatriement, numHotel),
     FOREIGN KEY (numRapatriement) REFERENCES Rapatriement(numRapatriement)
 );
-
-
 
 CREATE TABLE Hotel (
     numHotel INTEGER PRIMARY KEY,
@@ -81,32 +90,27 @@ CREATE TABLE Hotel (
     prixNuit INTEGER(5) NOT NULL
 );
 
+INSERT INTO typeContrat VALUES (1, 'Plénitude');
+INSERT INTO typeContrat VALUES (2, 'Tous Risques ECO');
 
-INSERT INTO TypeContrat VALUES (1, 'Plénitude');
-INSERT INTO TypeContrat VALUES (2, 'Tous Risques ECO');
+INSERT INTO TechniciensAssistance VALUES (1, 'BENTOU', 'Olivia');
 
+INSERT INTO Adherent VALUES (1, 'IVANOVITCH', 'Sacha', '14 boulevard du Temple', 75003, 'Paris', '06-92-88-29-53');
+INSERT INTO Adherent VALUES (2, 'BELKACEM', 'Marwan', '2 rue Maspero', 75016, 'Paris', '06-73-93-99-05');
 
+INSERT INTO Vehicule VALUES ('3412 CV 75', 'Citroën', 'voiture', 'C3', '2003-04-15');
+INSERT INTO Vehicule VALUES ('BJ 83 AE', 'Renault', 'voiture', 'Kadjar', '2019-10-10');
+INSERT INTO Vehicule VALUES ('GN-92-DE', 'Renault', 'voiture', 'Koleos', '2020-01-03');
 
-INSERT INTO TechnicienAssistance VALUES (1, 'BENTOU', 'Olivia');
+INSERT INTO Sinistre (idTypeContrat, DateSinistre, heureSinistre, causeSinistre, diagnosticSinistre, placeSinistre, nbPersonnesPresent, fraisDepannage) VALUES (1, '2020-05-20', '13:27', 'Endormissement', 'Déformation modérée des éléments de direction', 'Dinan (22100)', 1 ,210);
+INSERT INTO Sinistre (idTypeContrat, DateSinistre, heureSinistre, causeSinistre, diagnosticSinistre, placeSinistre, nbPersonnesPresent, fraisDepannage) VALUES (2, '2020-06-03', '19:30', 'Percuté par un poids lourd', 'Véhicule irrécupérable', 'Saint Vaury (23320)', 2 ,190);
 
-INSERT INTO Adherent VALUES (1, 'IVANOVITCH', 'Sacha', '14 boulevard du Temple', 75003, 'Paris', '06-92-88-29-53',1);
-INSERT INTO Adherent VALUES (2, 'BELKACEM', 'Marwan', '2 rue Maspero', 75016, 'Paris', '06-73-93-99-05',2);
+INSERT INTO Rapatriement (numSinistre, TypeTransport, CoutTransport, villeDepart, villeArrivee) VALUES (2, 'Taxi', 22, 'Saint Vaury', 'Guéret');
+INSERT INTO Rapatriement (numSinistre, TypeTransport, CoutTransport, villeDepart, villeArrivee) VALUES (2, 'Train', 23.80, 'Guéret', 'Limoges');
+INSERT INTO Rapatriement (numSinistre, TypeTransport, CoutTransport, villeDepart, villeArrivee) VALUES (2, 'Train', 68, 'Limoges', 'Paris-Austerlitz');
 
-INSERT INTO Vehicule VALUES ('3412 CV 75', 'Citroën', 'voiture', 'C3', '2003-04-15', 1);
-INSERT INTO Vehicule VALUES ('BJ 83 AE', 'Renault', 'voiture', 'Kadjar', '2019-10-10', 1);
-INSERT INTO Vehicule VALUES ('GN-92-DE', 'Renault', 'voiture', 'Koleos', '2020-01-03', 2);
-    
-
-INSERT INTO Sinistre VALUES (1, 1, '2020-05-20', '13:27', 'Endormissement', 'Déformation modérée des éléments de direction', 'Dinan (22100)', 1);
-INSERT INTO Sinistre VALUES (2, 2, '2020-06-03', '19:30', 'Percuté par un poids lourd', 'Véhicule irrécupérable', 'Saint Vaury (23320)', 2);  
-    
-
-INSERT INTO Rapatriement VALUES (1, 2, 'Taxi', 22, 'Saint Vaury', 'Guéret');
-INSERT INTO Rapatriement VALUES (2, 2, 'Train', 23.80, 'Guéret', 'Limoges');
-INSERT INTO Rapatriement VALUES (3, 2, 'Train', 68, 'Limoges', 'Paris-Austerlitz');
-
-INSERT INTO SejourHotel VALUES (1, 1, 1, 2);
-INSERT INTO SejourHotel VALUES (1, 1, 2, 1);
+INSERT INTO SejourHotel (numRapatriement, numSinistre, numHotel, nbNuitees) VALUES (1, 1, 1, 2);
+INSERT INTO SejourHotel (numRapatriement, numSinistre, numHotel, nbNuitees) VALUES (1, 1, 2, 1);
 
 INSERT INTO Hotel VALUES (1, 'hôtel du theatre', '2 rue Sainte Claire', 22100, 'Dinan', '02-96-39-06-91', 65);
 INSERT INTO Hotel VALUES (2, 'hôtel Ocean', '9 place du 11 novembre 1918', 22100, 'Dinan', '02-96-85-43-61', 79);
