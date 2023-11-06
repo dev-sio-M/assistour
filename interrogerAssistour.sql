@@ -13,7 +13,7 @@ WHERE numHotel IN (
     AND Dossier.DateDuSinistre = '2020-05-20'
 );
 
-/*Liste des hôtels qui ont hébergé M. IVANOVITCH (sinistre du 20/05/2020)*/
+/*Nombre total de nuitées à l'hôtel dont a bénéficié M. IVANOVITCH (sinistre du 20/05/2020)*/
 SELECT COUNT(*) AS TotalNuitees
 FROM Heberger
 WHERE numRapatriement IN (
