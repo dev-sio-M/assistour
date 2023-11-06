@@ -68,13 +68,13 @@ CREATE TABLE Hotel (
 );
 
 CREATE TABLE Garage (
-	numGarage INTEGER NOT NULL,
-	nomGarage VARCHAR(30) NOT NULL,
-	adresseGarage VARCHAR(50) NOT NULL,
-	telephoneGarage VARCHAR(15) NOT NULL,
-	marqueGarage VARCHAR(50),
-	avanceFondsAcepptee INTEGER(255) NOT NULL,
-	PRIMARY KEY(numGarage)
+    numGarage INTEGER NOT NULL,
+    nomGarage VARCHAR(30) NOT NULL,
+    adresseGarage VARCHAR(50) NOT NULL,
+    telephoneGarage VARCHAR(15) NOT NULL,
+    marqueGarage VARCHAR(50),
+    avanceFondsAcepptee INTEGER(255) NOT NULL,
+    PRIMARY KEY(numGarage)
 );
 
 CREATE TABLE Discuter (
@@ -126,10 +126,10 @@ CREATE TABLE Souscrire (
 );
 
 CREATE TABLE Detenir (
-	numDossier INTEGER NOT NULL,
+    numDossier INTEGER NOT NULL,
     numAdherent INTEGER NOT NULL,
     PRIMARY KEY(numDossier, numAdherent),
-	FOREIGN KEY(numDossier) REFERENCES Dossier(numSinistre),
+    FOREIGN KEY(numDossier) REFERENCES Dossier(numSinistre),
     FOREIGN KEY(numAdherent) REFERENCES Adherent(numAdherent)
 );
 
