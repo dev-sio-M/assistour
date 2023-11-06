@@ -59,7 +59,7 @@ CREATE TABLE Rapatriement (
 );
 
 CREATE TABLE Hotel (
-	numHotel INTEGER NOT NULL,
+    numHotel INTEGER NOT NULL,
     nomHotel VARCHAR(30) NOT NULL,
     adresseHotel VARCHAR(50) NOT NULL,
     telephoneHotel VARCHAR(15) NOT NULL,
