@@ -24,7 +24,7 @@ CREATE TABLE Adherent (
     CodePostalAdherent INTEGER(10)NOT NULL,
     villeAdherent VARCHAR(30) NOT NULL,
     telephoneAdherent VARCHAR(15) NOT NULL,
-	PRIMARY KEY(numAdherent)
+    PRIMARY KEY(numAdherent)
 );
 
 CREATE TABLE Vehicule (
