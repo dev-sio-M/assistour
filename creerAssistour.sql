@@ -1,12 +1,11 @@
 DROP DATABASE IF EXISTS assistour;
 CREATE DATABASE assistour;
-
 USE assistour;
 
 CREATE TABLE TypeContrat (
     idTypeContrat INTEGER NOT NULL,
     nomTypeContrat VARCHAR(30) NOT NULL,
-    PRIMARY KEY(idtypeContrat)
+    PRIMARY KEY(idTypeContrat)
 );
 
 CREATE TABLE TechnicienAssistance (
@@ -21,14 +20,14 @@ CREATE TABLE Adherent (
     nomAdherent VARCHAR(30) NOT NULL,
     prenomAdherent VARCHAR(30) NOT NULL,
     adresseAdherent VARCHAR(30) NOT NULL,
-    CodePostalAdherent INTEGER(10)NOT NULL,
+    CodePostalAdherent INTEGER(10) NOT NULL,
     villeAdherent VARCHAR(30) NOT NULL,
     telephoneAdherent VARCHAR(15) NOT NULL,
     PRIMARY KEY(numAdherent)
 );
 
 CREATE TABLE Vehicule (
-    immatriculation VARCHAR(30) ,
+    immatriculation VARCHAR(30),
     marque VARCHAR(30) NOT NULL,
     type VARCHAR(30) NOT NULL,
     modele VARCHAR(30) NOT NULL,
@@ -44,8 +43,8 @@ CREATE TABLE Dossier (
     diagnosticDuSinistre VARCHAR(250) NOT NULL,
     lieuDuSinistre VARCHAR(100) NOT NULL,
     vehiculeConcerne VARCHAR(50) NOT NULL,
-    nbPersPresentesDansVehicule INTEGER(100) NOT NULL,
-    fraisDepanage INTEGER(255) NOT NULL,
+    nbPersPresentesDansVehicule INTEGER NOT NULL,
+    fraisDepanage INTEGER NOT NULL,
     PRIMARY KEY(numSinistre)
 );
 
@@ -63,7 +62,7 @@ CREATE TABLE Hotel (
     nomHotel VARCHAR(30) NOT NULL,
     adresseHotel VARCHAR(50) NOT NULL,
     telephoneHotel VARCHAR(15) NOT NULL,
-    prixNuit INTEGER(200) NOT NULL,
+    prixNuit INTEGER NOT NULL,
     PRIMARY KEY(numHotel)
 );
 
@@ -73,7 +72,7 @@ CREATE TABLE Garage (
     adresseGarage VARCHAR(50) NOT NULL,
     telephoneGarage VARCHAR(15) NOT NULL,
     marqueGarage VARCHAR(50),
-    avanceFondsAcepptee INTEGER(255) NOT NULL,
+    avanceFondsAcceptee INTEGER NOT NULL,
     PRIMARY KEY(numGarage)
 );
 
@@ -85,13 +84,23 @@ CREATE TABLE Discuter (
     FOREIGN KEY(numAdherent) REFERENCES Adherent(numAdherent)
 );
 
+CREATE TABLE Evaluation (
+    idCouleur INTEGER NOT NULL,
+    couleur VARCHAR(30) NOT NULL,
+    signification VARCHAR(30) NOT NULL,
+    PRIMARY KEY(idCouleur)
+);
+
 CREATE TABLE Heberger (
     numRapatriement INTEGER NOT NULL,
     numHotel INTEGER NOT NULL,
+    idCouleur INTEGER NOT NULL,
     PRIMARY KEY(numRapatriement, numHotel),
     FOREIGN KEY(numRapatriement) REFERENCES Rapatriement(numRapatriement),
-    FOREIGN KEY(numHotel) REFERENCES Hotel(numHotel)
+    FOREIGN KEY(numHotel) REFERENCES Hotel(numHotel),
+    FOREIGN KEY(idCouleur) REFERENCES Evaluation(idCouleur)
 );
+
 
 CREATE TABLE Depanner (
     numRapatriement INTEGER NOT NULL,
@@ -110,9 +119,15 @@ CREATE TABLE Posseder (
 );
 
 CREATE TABLE Reparer (
+    idOperation INT NOT NULL AUTO_INCREMENT,
+    numSinistre INTEGER NOT NULL,
     numGarage INTEGER NOT NULL,
     immatriculation VARCHAR(30) NOT NULL,
-    PRIMARY KEY(numGarage, immatriculation),
+    typeOperation VARCHAR(100) NOT NULL,
+    dateOperation DATE NOT NULL,
+    cout DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY(idOperation),
+    FOREIGN KEY(numSinistre) REFERENCES Dossier(numSinistre),
     FOREIGN KEY(numGarage) REFERENCES Garage(numGarage),
     FOREIGN KEY(immatriculation) REFERENCES Vehicule(immatriculation)
 );
@@ -140,6 +155,7 @@ CREATE TABLE Utiliser (
     FOREIGN KEY(numSinistre) REFERENCES Dossier(numSinistre),
     FOREIGN KEY(numRapatriement) REFERENCES Rapatriement(numRapatriement)
 );
+
 
 INSERT INTO TypeContrat VALUES (1, 'Plénitude');
 INSERT INTO TypeContrat VALUES (2, 'Tous Risques ECO');
@@ -170,8 +186,8 @@ INSERT INTO Garage VALUES (2, 'garage Citroen de Guéret', '22 rue Marechal Lecl
 INSERT INTO Discuter VALUES (1, 1);
 INSERT INTO Discuter VALUES (1, 2);
 
-INSERT INTO Heberger VALUES (1, 1);
-INSERT INTO Heberger VALUES (1, 2);
+INSERT INTO Heberger VALUES (1, 1, 4);
+INSERT INTO Heberger VALUES (1, 2, 2);
 
 INSERT INTO Depanner VALUES (1, 1);
 INSERT INTO Depanner VALUES (2, 2);
@@ -195,4 +211,10 @@ INSERT INTO Detenir VALUES (2, 2);
 
 INSERT INTO Utiliser VALUES (1, 1);
 INSERT INTO Utiliser VALUES (2, 2);
+
+INSERT INTO CodeCouleur VALUES (4, 'Vert', 'Très bien');
+INSERT INTO CodeCouleur VALUES (3, 'Bleu', 'Bien');
+INSERT INTO CodeCouleur VALUES (2, 'Jaune', 'Correct');
+INSERT INTO CodeCouleur VALUES (1, 'Rouge', 'Décevant');
+
 
